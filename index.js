@@ -12,12 +12,13 @@ const byeChannelComment = "안녕히가세요.";
 
 client.on('ready', () => {
   console.log('켰다.');
-  client.user.setPresence({ game: { name: '!help를 쳐보세요.' }, status: 'online' })
+  client.user.setPresence({ game: { name: '무언가를' }, status: 'online' })
 
   let state_list = [
-    '!help를 쳐보세요.',
-    '메렁메렁',
-    '에베베베베',
+    '!도움 를 쳐보세요.',
+    '모든 구매 문의는 : ! PIS#7245',
+    '봇 문의 : ! MOON#2020',
+    '무언가를'
   ]
   let state_list_index = 1;
   let change_delay = 3000; // 이건 초입니당. 1000이 1초입니당.
