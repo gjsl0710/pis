@@ -13,6 +13,28 @@ const byeChannelComment = "안녕히가세요.";
 client.on('ready', () => {
   console.log('켰다.');
   client.user.setPresence({ game: { name: '!help를 쳐보세요.' }, status: 'online' })
+
+  let state_list = [
+    '!help를 쳐보세요.',
+    '메렁메렁',
+    '에베베베베',
+  ]
+  let state_list_index = 1;
+  let change_delay = 3000; // 이건 초입니당. 1000이 1초입니당.
+
+  function changeState() {
+    setTimeout(() => {
+      console.log( '상태 변경 -> ', state_list[state_list_index] );
+      client.user.setPresence({ game: { name: state_list[state_list_index] }, status: 'online' })
+      state_list_index += 1;
+      if(state_list_index >= state_list.length) {
+        state_list_index = 0;
+      }
+      changeState()
+    }, change_delay);
+  }
+
+  changeState();
 });
 
 client.on("guildMemberAdd", (member) => {
@@ -45,13 +67,13 @@ client.on('message', (message) => {
     return message.reply('pong');
   }
 
-  if(message.content == '!si') {
+  if(message.content == '!서버') {
     let embed = new Discord.RichEmbed()
-    let img = 'https://cdn.discordapp.com/icons/419671192857739264/6dccc22df4cb0051b50548627f36c09b.webp?size=256';
+    let img = 'https://cdn.discordapp.com/avatars/752002721933951046/c53f36d0c3d8b4da213dd83b5b85096a.webp?size=128';
     var duration = moment.duration(client.uptime).format(" D [일], H [시간], m [분], s [초]");
-    embed.setColor('#186de6')
-    embed.setAuthor('server info of 콜라곰 BOT', img)
-    embed.setFooter(`콜라곰 BOT ❤️`)
+    embed.setColor('#705DA8')
+    embed.setAuthor('PIS', img)
+    embed.setFooter(`PIS 봇`)
     embed.addBlankField()
     embed.addField('RAM usage',    `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`, true);
     embed.addField('running time', `${duration}`, true);
@@ -76,12 +98,12 @@ client.on('message', (message) => {
     message.channel.send(embed);
   }
 
-  if(message.content == 'embed') {
-    let img = 'https://cdn.discordapp.com/icons/419671192857739264/6dccc22df4cb0051b50548627f36c09b.webp?size=256';
+  if(message.content == 'PIS') {
+    let img = 'https://cdn.discordapp.com/avatars/752002721933951046/c53f36d0c3d8b4da213dd83b5b85096a.webp?size=128';
     let embed = new Discord.RichEmbed()
-      .setTitle('타이틀')
+      .setTitle('PIS')
       .setURL('http://www.naver.com')
-      .setAuthor('나긋해', img, 'http://www.naver.com')
+      .setAuthor('PIS', img, 'http://www.naver.com')
       .setThumbnail(img)
       .addBlankField()
       .addField('Inline field title', 'Some value here')
@@ -91,26 +113,24 @@ client.on('message', (message) => {
       .addField('Inline field title', 'Some value here1\nSome value here2\nSome value here3\n')
       .addBlankField()
       .setTimestamp()
-      .setFooter('나긋해가 만듬', img)
+      .setFooter('PIS 봇', img)
 
     message.channel.send(embed)
-  } else if(message.content == '!help') {
-    let helpImg = 'https://images-ext-1.discordapp.net/external/RyofVqSAVAi0H9-1yK6M8NGy2grU5TWZkLadG-rwqk0/https/i.imgur.com/EZRAPxR.png';
+  } else if(message.content == '!도움') {
+    let helpImg = 'https://cdn.discordapp.com/avatars/752002721933951046/c53f36d0c3d8b4da213dd83b5b85096a.webp?size=128';
     let commandList = [
-      {name: '!help', desc: 'help'},
-      {name: 'ping', desc: '현재 핑 상태'},
-      {name: 'embed', desc: 'embed 예제1'},
-      {name: '!전체공지', desc: 'dm으로 전체 공지 보내기'},
-      {name: '!전체공지2', desc: 'dm으로 전체 embed 형식으로 공지 보내기'},
+      {name: '!도움', desc: '도움말'},
+      {name: 'PIS', desc: 'PIS'},
+      {name: '!서버', desc: '서버정보 표기'},
+      {name: '!공지', desc: '공지'},
       {name: '!청소', desc: '텍스트 지움'},
-      {name: '!초대코드', desc: '해당 채널의 초대 코드 표기'},
-      {name: '!초대코드2', desc: '봇이 들어가있는 모든 채널의 초대 코드 표기'},
+      {name: '!초대코드', desc: '영구 초대코드 생성'},
     ];
     let commandStr = '';
     let embed = new Discord.RichEmbed()
-      .setAuthor('Help of 콜라곰 BOT', helpImg)
-      .setColor('#186de6')
-      .setFooter(`콜라곰 BOT ❤️`)
+      .setAuthor('도움말', helpImg)
+      .setColor('#705DA8')
+      .setFooter(`PIS 봇`)
       .setTimestamp()
     
     commandList.forEach(x => {
@@ -145,24 +165,24 @@ client.on('message', (message) => {
           message.channel.send('**'+message.guild.channels.get(message.channel.id).guild.name+'** 채널 권한이 없어 초대코드 발행 실패')
         }
       })
-  } else if(message.content.startsWith('!전체공지2')) {
+  } else if(message.content.startsWith('!공지')) {
     if(checkPermission(message)) return
     if(message.member != null) { // 채널에서 공지 쓸 때
-      let contents = message.content.slice('!전체공지2'.length);
+      let contents = message.content.slice('!공지'.length);
       let embed = new Discord.RichEmbed()
-        .setAuthor('공지 of 콜라곰 BOT')
-        .setColor('#186de6')
-        .setFooter(`콜라곰 BOT ❤️`)
+        .setAuthor('PIS Shop')
+        .setColor('#705DA8')
+        .setFooter(`모든 구매문의 ! PIS#7245`)
         .setTimestamp()
   
-      embed.addField('공지: ', contents);
+      embed.addField('전달사항 ', contents);
   
       message.member.guild.members.array().forEach(x => {
         if(x.user.bot) return;
         x.user.send(embed)
       });
   
-      return message.reply('공지를 전송했습니다.');
+      return message.reply('공지전송 완료 :white_check_mark: ');
     } else {
       return message.reply('채널에서 실행해주세요.');
     }
@@ -175,7 +195,7 @@ client.on('message', (message) => {
         x.user.send(`<@${message.author.id}> ${contents}`);
       });
   
-      return message.reply('공지를 전송했습니다.');
+      return message.reply('공지전송 완료 :white_check_mark: .');
     } else {
       return message.reply('채널에서 실행해주세요.');
     }
